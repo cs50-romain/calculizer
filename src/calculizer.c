@@ -2,8 +2,13 @@
 #include <stdio.h>
 #include <ncurses.h>
 
-#define MIN_POSITION 1
-#define MAX_POSITION 3
+#define MIN_DOWN_POSITION 0 
+#define MAX_UP_POSITION 5
+
+// A string is defined as *char. A char pointer to the beginning character of the string.
+// That means you can create an array of char pointers for strings
+char *options[] = {"Multiply", "Add\t", "Substract", "1", "2", "3"};
+#define OPTIONS_SIZE ((int) (sizeof(options) / sizeof(options[0])))
 
 int multiply(int num1, int num2) {
 	return num1 * num2;
@@ -36,17 +41,21 @@ void menu() {
 
 	while (keypressed != 10) {
 		clear();
-		pointArrow(1, position); printw("Multiply\n");
-		pointArrow(2, position); printw("Add\n");
-		pointArrow(3, position); printw("Substract\n");
-
-		//keypressed = getch();
+		
+		for (int i = 0; i < OPTIONS_SIZE / 2;i++) {
+			pointArrow(i, position); printw("%s\t", options[i]);
+			pointArrow(i + 3, position); printw("%s\n", options[i+3]);
+		}
 		keypressed = getch();
 
-		if (keypressed == KEY_UP && position > MIN_POSITION) {
+		if (keypressed == KEY_UP && position > MIN_DOWN_POSITION) {
 			position--;
-		} else if (keypressed == KEY_DOWN && position < MAX_POSITION) {
+		} else if (keypressed == KEY_DOWN && position < MAX_UP_POSITION) {
 			position++;
+		} else if (keypressed == KEY_RIGHT && position + 3 <= MAX_UP_POSITION) {
+			position+=3;
+		} else if (keypressed == KEY_LEFT && position - 3 >= MIN_DOWN_POSITION) {
+			position = position - 3;
 		} else {
 			position = position;
 		}
