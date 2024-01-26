@@ -3,12 +3,14 @@
 #include <ncurses.h>
 
 #define MIN_DOWN_POSITION 0 
-#define MAX_UP_POSITION 12
+#define MAX_UP_POSITION 13
 
 // A string is defined as *char. A char pointer to the beginning character of the string.
 // That means you can create an array of char pointers for strings
-char *options[] = {"Multiply", "Add\t", "Substract", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
+char *options[] = {"*", "+", "-", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
 #define OPTIONS_SIZE ((int) (sizeof(options) / sizeof(options[0])))
+
+char *calculation[3];
 
 int multiply(int num1, int num2) {
 	return num1 * num2;
@@ -39,8 +41,11 @@ void menu() {
 
 	refresh();
 
-	while (keypressed != 10) {
+	int counter = 0;
+
+	while (keypressed != 27) {
 		clear();
+		printw("\t\t\tCalculating: %s %s %s\n",calculation[0], calculation[1], calculation[2]);
 		
 		for (int i = 0; i < 3;i++) {
 			pointArrow(i, position); printw("%s\t", options[i]);
@@ -50,7 +55,8 @@ void menu() {
 		}
 
 		// Currently for number 0, as it is in an odd position.
-		printw("\t\t\t\t\t"); pointArrow(12, position); printw("%s\n", options[OPTIONS_SIZE - 1]);
+		printw("\t\t\t\t"); pointArrow(12, position); printw("%s\n", options[OPTIONS_SIZE - 1]);
+		printw("\t\t\t\t"); pointArrow(13, position); printw("%s\n", "ENTER");
 
 		keypressed = getch();
 
@@ -62,16 +68,22 @@ void menu() {
 			position+=3;
 		} else if (keypressed == KEY_LEFT && position - 3 >= MIN_DOWN_POSITION) {
 			position = position - 3;
+		} else if (keypressed == 10) {
+			if (position == 13) {
+				break;
+			}
+			calculation[counter] = options[position];
+			counter++;
 		} else {
 			position = position;
 		}
+
 		refresh();
 	}
 	endwin();
 }
 
 int main(void) {
-	printf("HERE\n");
 	menu();
 	printf("DONE\n");
 	return 0;
