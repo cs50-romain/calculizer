@@ -4,6 +4,7 @@
 
 #define MIN_DOWN_POSITION 0 
 #define MAX_UP_POSITION 13
+#define ATOI 48
 
 // A string is defined as *char. A char pointer to the beginning character of the string.
 // That means you can create an array of char pointers for strings
@@ -17,7 +18,7 @@ int multiply(int num1, int num2) {
 }
 
 int add(int num1, int num2) {
-	return num1 * num2;
+	return num1 + num2;
 }
 
 void pointArrow(int realposition, int position) {
@@ -27,6 +28,16 @@ void pointArrow(int realposition, int position) {
 		printw("     [ ] ");
 	}
 	refresh();
+}
+
+int calculate(char num1, char operation, char num2) {
+	int result;
+	if (operation == '+') {
+		result = add(num1 - ATOI, num2 - ATOI);
+	} else if (operation == '*') {
+		result = multiply(num1 - ATOI, num2 - ATOI);
+	}
+	return result;
 }
 
 void menu() {
@@ -42,10 +53,11 @@ void menu() {
 	refresh();
 
 	int counter = 0;
+	int result;
 
 	while (keypressed != 27) {
 		clear();
-		printw("\t\t\tCalculating: %s %s %s\n",calculation[0], calculation[1], calculation[2]);
+		printw("\t\t\tCalculating: %s %s %s = %d\n",calculation[0], calculation[1], calculation[2], result);
 		
 		for (int i = 0; i < 3;i++) {
 			pointArrow(i, position); printw("%s\t", options[i]);
@@ -70,7 +82,7 @@ void menu() {
 			position = position - 3;
 		} else if (keypressed == 10) {
 			if (position == 13) {
-				break;
+				result = calculate(*calculation[0], *calculation[1], *calculation[2]);
 			}
 			calculation[counter] = options[position];
 			counter++;
