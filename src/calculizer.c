@@ -3,12 +3,12 @@
 #include <ncurses.h>
 
 #define MIN_DOWN_POSITION 0 
-#define MAX_UP_POSITION 13
+#define MAX_UP_POSITION OPTIONS_SIZE - 1
 #define ATOI 48
 
 // A string is defined as *char. A char pointer to the beginning character of the string.
 // That means you can create an array of char pointers for strings
-char *options[] = {"*", "+", "-", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
+char *options[] = {"*", "+", "-", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "Enter", "Clear"};
 #define OPTIONS_SIZE ((int) (sizeof(options) / sizeof(options[0])))
 
 char *calculation[3];
@@ -63,12 +63,11 @@ void menu() {
 			pointArrow(i, position); printw("%s\t", options[i]);
 			pointArrow(i + 3, position); printw("%s\t", options[i+3]);
 			pointArrow(i + 6, position); printw("%s\t", options[i+6]);
-			pointArrow(i + 9, position); printw("%s\n", options[i+9]);
+			pointArrow(i + 9, position); printw("%s\t", options[i+9]);
+			if (i + 12 < OPTIONS_SIZE) {
+				pointArrow(i + 12, position); printw("%s\n", options[i+12]);
+			}
 		}
-
-		// Currently for number 0, as it is in an odd position.
-		printw("\t\t\t\t"); pointArrow(12, position); printw("%s\n", options[OPTIONS_SIZE - 1]);
-		printw("\t\t\t\t"); pointArrow(13, position); printw("%s\n", "ENTER");
 
 		keypressed = getch();
 
@@ -83,9 +82,13 @@ void menu() {
 		} else if (keypressed == 10) {
 			if (position == 13) {
 				result = calculate(*calculation[0], *calculation[1], *calculation[2]);
+			} else if (position == 14) {
+				result = 0;
+				counter = 0;
+			} else {
+				calculation[counter] = options[position];
+				counter++;
 			}
-			calculation[counter] = options[position];
-			counter++;
 		} else {
 			position = position;
 		}
