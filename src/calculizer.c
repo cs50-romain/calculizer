@@ -9,9 +9,10 @@
 // A string is defined as *char. A char pointer to the beginning character of the string.
 // That means you can create an array of char pointers for strings
 char *options[] = {"*", "+", "-", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "Enter", "Clear"};
-#define OPTIONS_SIZE ((int) (sizeof(options) / sizeof(options[0])))
-
 char *calculation[3];
+#define OPTIONS_SIZE ((int) (sizeof(options) / sizeof(options[0])))
+#define CALC_SIZE ((int) (sizeof(calculation) / sizeof(calculation[0])))
+
 
 int multiply(int num1, int num2) {
 	return num1 * num2;
@@ -85,6 +86,9 @@ void menu() {
 			} else if (position == 14) {
 				result = 0;
 				counter = 0;
+				for (int i = 0; i < CALC_SIZE; i++) {
+					calculation[i] = NULL;
+				}
 			} else {
 				calculation[counter] = options[position];
 				counter++;
